@@ -12,7 +12,7 @@
 
 NAME			= libft.a
 
-SRCS			= $(wildcard *.c)
+SRCS			= ${wildcard *.c}
 
 HEADERS			= libft.h
 
@@ -27,11 +27,11 @@ RM				= rm -f
 
 all: $(NAME) 
 
-%.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< -o $@
+%.o: %.c $(HEADERS) | $(OBJ_DIR)
+		$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS) 
-	ar rcs $(NAME) $(OBJS)
+$(NAME): $(OBJS)
+		ar rcs $(NAME) $(OBJS)
 
 clean:
 		$(RM) $(OBJS)
