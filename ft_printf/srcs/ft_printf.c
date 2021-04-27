@@ -1,38 +1,35 @@
 #include "../includes/ft_printf.h"
 
-// format specifier?  %[flags][width][.precision][length]type
+// format specifier %[flags][width][.precision][length]type
+static int	ft_printf_internal(const char *format, va_list *ap)
+{
+	int			length;
+	t_specifier	specifier;
 
-int ft_printf(const char *format, ...)
+	length = 0;
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
+			parse_format_specifier(&format, ap, &specifier);
+			// DO print ???
+		}
+		else
+		{
+			length += write(1, format++, 1); // Change for ft_putchar()???; write protection???
+		}
+	}
+	return (length);
+}
+
+int	ft_printf(const char *format, ...)
 {
 	va_list	ap; // Argument pointer
-	char	*p, *sval;
-	int		ival;
-	int 	ret;
+	int		length;
 
 	va_start(ap, format); // Point ap to the first unnamed argument
-	ret = parse_format(format, ap);
-//	for (p = format; *p; p++)
-//	{
-//		if (*p != '%')
-//		{
-//			ft_putchar_fd(*p, 1);
-//			continue;
-//		}
-//		switch (*++p)
-//		{
-//			case 'd':
-//				ival = va_arg(ap, int);
-//				ft_putnbr_fd(ival, 1);
-//				break;
-//			case 's':
-//				sval = va_arg(ap, char *);
-//				ft_putstr_fd(sval, 1);
-//				break;
-//			default:
-//				ft_putchar_fd(*sval, 1);
-//				break;
-//		}
-//	}
+	length = ft_printf_internal(format, &ap);
 	va_end(ap);
-	return (ret);
+	return (length);
 }
