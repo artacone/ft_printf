@@ -2,32 +2,52 @@
 
 int	print_number(va_list *ap, t_specifier *specifier)
 {
-	unsigned int	base;
-	if (specifier->type == 'x' || specifier->type == 'X')
-	{
-		base = 16U;
-	}
-//	else if (specifier->type == 'o')
-	else
-	{
-		base = 10U;
-		specifier->flags &= ~FLAGS_HASH;
-	}
-	if (specifier->type == 'X')
-	{
-		specifier->flags |= FLAGS_UPPERCASE;
-	}
-	if ((specifier->type != 'i') && (specifier->type != 'd'))
-	{
-		specifier->flags &= ~(FLAGS_PLUS | FLAGS_SPACE);
-	}
-	if (specifier->flags & FLAGS_PRECISION)
-	{
-		specifier->flags &= ~FLAGS_ZEROPAD;
-	}
-	// Conversion to ll hh here
+//	unsigned int base;
+//	if (specifier->type == 'x' || specifier->type == 'X')
+//		base = 16U;
+//	else
+//	{
+//		base = 10U;
+//		specifier->flags &= ~FLAGS_HASH;
+//	}
+//	if (specifier->type == 'X')
+//		specifier->flags |= FLAGS_UPPERCASE;
+//	if ((specifier->type != 'i') && (specifier->type != 'd'))
+//		specifier->flags &= ~(FLAGS_PLUS | FLAGS_SPACE);
+//	if (specifier->flags & FLAGS_PRECISION)
+//		specifier->flags &= ~FLAGS_ZEROPAD;
+//	// Conversion to ll hh here
+//	if ((specifier->type == 'i') || (specifier->type == 'd'))
+//	{
+//		if (specifier->flags & FLAGS_LONG_LONG)
+//		{
+//			const long long	value = va_arg(*ap, long long);
+////			length += ntoa_long_long();
+//		}
+//		else if (specifier->flags & FLAGS_LONG)
+//		{
+//			const long	value = va_arg(*ap, long);
+////			length += ntoa_long();
+//		}
+//		else
+//		{
+//			const int	value = (specifier->flags & FLAGS_CHAR) ? (char) va_arg(*ap, int) : (specifier->flags & FLAGS_SHORT) ? (short int) va_arg(*ap, int) : va_arg(*ap, int);
+////			length += ntoa_long();
+//		}
+//	}
+//	else
+//	{
+//		// unsigned
+//		if (specifier->flags & FLAGS_LONG_LONG)
+//		{
+//			const unsigned long long	value = va_arg(*ap, unsigned long long);
+//			// length += ...
+//		}
+//		else if ()
+//	}
 	const int value = va_arg(*ap, int);
-	int length = ntoa(); // FIXME
+	int length = 0; // FIXME
+	length += write(1, "num", 3);
 	return (length);
 }
 
@@ -64,10 +84,9 @@ int	print_string(va_list *ap, t_specifier *specifier)
 	int				length;
 	const char		*str;
 
-
-	l = strnlen(str, specifier->precision ? specifier->precision : (size_t)(-1)); //FIXME
-	length = 0;
 	str = va_arg(*ap, char*);
+	l = ft_strnlen(str, specifier->precision ? specifier->precision : (size_t)(-1)); //FIXME
+	length = 0;
 	if (specifier->flags & FLAGS_PRECISION)
 	{
 		l = (l < specifier->precision ? l : specifier->precision);
@@ -79,7 +98,7 @@ int	print_string(va_list *ap, t_specifier *specifier)
 			length += write(1, " ", 1);
 		}
 	}
-	while ((*str != '\0') && ((!specifier->flags & FLAGS_PRECISION) || specifier->precision--))
+	while ((*str != '\0') && (!(specifier->flags & FLAGS_PRECISION) || specifier->precision--))
 	{
 		length += write(1, str++, 1); // TODO Change for ft_putstr
 	}
@@ -99,7 +118,7 @@ int	print_ptr(va_list *ap, t_specifier *specifier)
 	void			*ptr;
 
 	ptr = (void *)va_arg(*ap, void*);
-	write(1, "kek", 3); // FIXME
+	write(1, "ptr", 3); // FIXME
 	return (length);
 }
 

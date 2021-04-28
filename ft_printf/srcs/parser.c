@@ -28,7 +28,7 @@ static void	parse_width(const char **format, va_list *ap, t_specifier *specifier
 	specifier->width = 0U;
 	if (ft_isdigit(**format))
 	{
-		specifier->width = ft_atoi(*format); // FIXME Shift pointer
+		specifier->width = ft_printf_atoi(format);
 	}
 	else if (**format == '*')
 	{
@@ -46,16 +46,16 @@ static void	parse_width(const char **format, va_list *ap, t_specifier *specifier
 	}
 }
 
-static void	*parse_precision(const char **format, va_list *ap, t_specifier *specifier)
+static void	parse_precision(const char **format, va_list *ap, t_specifier *specifier)
 {
 	specifier->precision = 0U;
-	if (**format = '.')
+	if (**format == '.')
 	{
 		specifier->flags |= FLAGS_PRECISION;
 		(*format)++;
 		if (ft_isdigit(**format))
 		{
-			specifier->precision = ft_atoi(*format); // FIXME Shift pointer
+			specifier->precision = ft_printf_atoi(format);
 		}
 		else if (**format == '*')
 		{
