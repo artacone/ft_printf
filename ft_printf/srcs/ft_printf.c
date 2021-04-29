@@ -17,7 +17,7 @@ static int	ft_printf_internal(const char *format, va_list *ap)
 		}
 		else
 		{
-			length += write(1, format++, 1); // Change for ft_putchar()???; write protection???
+			length += write(1, format++, 1);
 		}
 	}
 	return (length);
@@ -25,10 +25,10 @@ static int	ft_printf_internal(const char *format, va_list *ap)
 
 int	ft_printf(const char *format, ...)
 {
-	va_list	ap; // Argument pointer
+	va_list	ap;
 	int		length;
 
-	va_start(ap, format); // Point ap to the first unnamed argument
+	va_start(ap, format);
 	length = ft_printf_internal(format, &ap);
 	va_end(ap);
 	return (length);
