@@ -33,7 +33,11 @@ void	parse_format_specifier(const char **format, va_list *ap, t_specifier *speci
 int		print_specified(va_list *ap, t_specifier *specifier);
 
 size_t	ft_strnlen(const char *s, size_t maxlen);
-int	ft_isdigit(int c);
-unsigned int ft_printf_atoi(const char **str);
+int		ft_isdigit(int c);
+unsigned int	ft_printf_atoi(const char **str);
+
+int		process_int(va_list  *ap, t_specifier *specifier);
+size_t	ft_ntoa_long_long(t_specifier *specifier, unsigned long long value,
+							int is_negative, unsigned int base);
 
 #endif

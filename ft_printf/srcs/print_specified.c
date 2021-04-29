@@ -2,52 +2,13 @@
 
 int	print_number(va_list *ap, t_specifier *specifier)
 {
-//	unsigned int base;
-//	if (specifier->type == 'x' || specifier->type == 'X')
-//		base = 16U;
-//	else
-//	{
-//		base = 10U;
-//		specifier->flags &= ~FLAGS_HASH;
-//	}
-//	if (specifier->type == 'X')
-//		specifier->flags |= FLAGS_UPPERCASE;
-//	if ((specifier->type != 'i') && (specifier->type != 'd'))
-//		specifier->flags &= ~(FLAGS_PLUS | FLAGS_SPACE);
-//	if (specifier->flags & FLAGS_PRECISION)
-//		specifier->flags &= ~FLAGS_ZEROPAD;
-//	// Conversion to ll hh here
-//	if ((specifier->type == 'i') || (specifier->type == 'd'))
-//	{
-//		if (specifier->flags & FLAGS_LONG_LONG)
-//		{
-//			const long long	value = va_arg(*ap, long long);
-////			length += ntoa_long_long();
-//		}
-//		else if (specifier->flags & FLAGS_LONG)
-//		{
-//			const long	value = va_arg(*ap, long);
-////			length += ntoa_long();
-//		}
-//		else
-//		{
-//			const int	value = (specifier->flags & FLAGS_CHAR) ? (char) va_arg(*ap, int) : (specifier->flags & FLAGS_SHORT) ? (short int) va_arg(*ap, int) : va_arg(*ap, int);
-////			length += ntoa_long();
-//		}
-//	}
-//	else
-//	{
-//		// unsigned
-//		if (specifier->flags & FLAGS_LONG_LONG)
-//		{
-//			const unsigned long long	value = va_arg(*ap, unsigned long long);
-//			// length += ...
-//		}
-//		else if ()
-//	}
-	const int value = va_arg(*ap, int);
-	int length = 0; // FIXME
-	length += write(1, "num", 3);
+	int	length;
+
+	length = process_int(ap, specifier);
+//	const int value = va_arg(*ap, int);
+//	int length = 0; // FIXME
+//	length += write(1, "num", 3);
+
 	return (length);
 }
 
@@ -114,12 +75,12 @@ int	print_string(va_list *ap, t_specifier *specifier)
 
 int	print_ptr(va_list *ap, t_specifier *specifier)
 {
-	int 			length;
-	void			*ptr;
+	unsigned long long	ptr;
 
-	ptr = (void *)va_arg(*ap, void*);
-	write(1, "ptr", 3); // FIXME
-	return (length);
+	specifier->width = sizeof(void *) * 2U;
+	specifier->flags |= FLAGS_ZEROPAD | FLAGS_UPPERCASE;
+	ptr = (unsigned long long)va_arg(*ap, void*);
+	return (ft_ntoa_long_long(specifier, ptr, 0, 16U));
 }
 
 int	print_specified(va_list *ap, t_specifier *specifier)
