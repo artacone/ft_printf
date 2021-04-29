@@ -1,6 +1,6 @@
 #include "../includes/ft_printf.h"
 
-static void	process_int_base(t_specifier *specifier, unsigned int *base)
+static void	process_base(t_specifier *specifier, unsigned int *base)
 {
 	if (specifier->type == 'x' || specifier->type == 'X')
 		*base = 16U;
@@ -22,7 +22,7 @@ static unsigned long long	process_conv_signed(va_list *ap,
 											  int *is_negative)
 {
 	unsigned long long	uvalue;
-	long long	value;
+	long long			value;
 
 	if (specifier->flags & FLAGS_LONG_LONG)
 		value = va_arg(*ap, long long);
@@ -47,34 +47,32 @@ static unsigned long long	process_conv_signed(va_list *ap,
 static unsigned long long	process_conv_unsigned(va_list *ap,
 												t_specifier *specifier)
 {
-	unsigned long long	uvalue;
+	unsigned long long	value;
 
 	if (specifier->flags & FLAGS_LONG_LONG)
-		uvalue = va_arg(*ap, unsigned long long);
+		value = va_arg(*ap, unsigned long long);
 	else if (specifier->flags & FLAGS_LONG)
-		uvalue = va_arg(*ap, unsigned long);
+		value = va_arg(*ap, unsigned long);
 	else if (specifier->flags & FLAGS_CHAR)
-		uvalue = (unsigned char)va_arg(*ap, unsigned int);
+		value = (unsigned char)va_arg(*ap, unsigned int);
 	else if (specifier->flags & FLAGS_SHORT)
-		uvalue = (unsigned short int)va_arg(*ap, unsigned int);
+		value = (unsigned short int)va_arg(*ap, unsigned int);
 	else
-		uvalue = va_arg(*ap, unsigned int);
-	return (uvalue);
+		value = va_arg(*ap, unsigned int);
+	return (value);
 }
 
-int	process_int(va_list  *ap, t_specifier *specifier)
+int	process_integer(va_list *ap, t_specifier *specifier)
 {
 	unsigned long long	value;
-	int 				is_negative;
-	int					length;
+	int					is_negative;
 	unsigned int		base;
 
 	is_negative = 0;
-	process_int_base(specifier, &base);
+	process_base(specifier, &base);
 	if ((specifier->type == 'i') || (specifier->type == 'd'))
 		value = process_conv_signed(ap, specifier, &is_negative);
 	else
 		value = process_conv_unsigned(ap, specifier);
-	length = ft_ntoa_long_long(specifier, value, is_negative, base);
-	return (length);
+	return (ft_ntoa(specifier, value, is_negative, base));
 }

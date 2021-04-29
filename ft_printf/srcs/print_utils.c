@@ -1,24 +1,6 @@
 #include "../includes/ft_printf.h"
 
-// Put it in libft
-size_t	ft_strnlen(const char *s, size_t maxlen)
-{
-	const char	*str;
-
-	str = s;
-	while (*str && maxlen--)
-	{
-		str++;
-	}
-	return (str - s);
-}
-// Took it from libft
-int	ft_isdigit(int c)
-{
-	return ('0' <= c && c <= '9');
-}
-
-unsigned int ft_printf_atoi(const char **str)
+unsigned int	ft_printf_atoi(const char **str)
 {
 	unsigned int	i;
 
@@ -30,8 +12,7 @@ unsigned int ft_printf_atoi(const char **str)
 	return (i);
 }
 
-//return (print_buf_rev(specifier, buf, len));
-static size_t	print_buf_rev(t_specifier *specifier, char *buf, size_t len)
+static size_t	print_buf_rev(t_specifier *specifier, char *buf, size_t buf_index)
 {
 	size_t	length;
 	size_t	i;
@@ -39,15 +20,15 @@ static size_t	print_buf_rev(t_specifier *specifier, char *buf, size_t len)
 	length = 0;
 	if (!(specifier->flags & FLAGS_LEFT) && !(specifier->flags & FLAGS_ZEROPAD))
 	{
-		i = len;
+		i = buf_index;
 		while (i++ < specifier->width)
 		{
 			length += write(1, " ", 1);
 		}
 	}
-	while (len)
+	while (buf_index)
 	{
-		length += write(1, &buf[--len], 1);
+		length += write(1, &buf[--buf_index], 1);
 	}
 	if (specifier->flags & FLAGS_LEFT)
 	{
@@ -59,7 +40,7 @@ static size_t	print_buf_rev(t_specifier *specifier, char *buf, size_t len)
 	return (length);
 }
 
-static size_t	ft_ntoa_format(t_specifier *specifier, char *buf, size_t len,
+static size_t	ntoa_format(t_specifier *specifier, char *buf, size_t buf_index,
 						 int is_negative, unsigned int base)
 {
 	if (!(specifier->flags & FLAGS_LEFT))
@@ -67,62 +48,65 @@ static size_t	ft_ntoa_format(t_specifier *specifier, char *buf, size_t len,
 		if (specifier->width && (specifier->flags & FLAGS_ZEROPAD)
 			&& (is_negative || (specifier->flags & (FLAGS_PLUS | FLAGS_SPACE))))
 			specifier->width--;
-		while ((len < specifier->precision) && (len < NTOA_BUFFER_SIZE))
-			buf[len++] = '0';
-		while ((specifier->flags & FLAGS_ZEROPAD) && (len < specifier->width)
-			   && (len < NTOA_BUFFER_SIZE))
-			buf[len++] = '0';
+		while ((buf_index < specifier->precision) && (buf_index < NTOA_BUFFER_SIZE))
+			buf[buf_index++] = '0';
+		while ((specifier->flags & FLAGS_ZEROPAD) && (buf_index < specifier->width)
+			   && (buf_index < NTOA_BUFFER_SIZE))
+			buf[buf_index++] = '0';
 	}
 	if (specifier->flags & FLAGS_HASH)
 	{
 		if (!(specifier->flags & FLAGS_PRECISION)
-			&& len && ((len == specifier->precision) || len == specifier->width))
+			&& buf_index && ((buf_index == specifier->precision) || buf_index == specifier->width))
 		{
-			len--;
-			if (len && (base == 16U))
-				len--;
+			buf_index--;
+			if (buf_index && (base == 16U))
+				buf_index--;
 		}
 		if ((base == 16U) && !(specifier->flags & FLAGS_UPPERCASE)
-			&& (len < NTOA_BUFFER_SIZE))
-			buf[len++] = 'x';
+			&& (buf_index < NTOA_BUFFER_SIZE))
+			buf[buf_index++] = 'x';
 		else if ((base == 16U) && (specifier->flags & FLAGS_UPPERCASE)
-				 && (len < NTOA_BUFFER_SIZE))
-			buf[len++] = 'X';
-		if (len < NTOA_BUFFER_SIZE)
-			buf[len++] = '0';
+			 && (buf_index < NTOA_BUFFER_SIZE))
+			buf[buf_index++] = 'X';
+		if (buf_index < NTOA_BUFFER_SIZE)
+			buf[buf_index++] = '0';
 	}
-	if (len < NTOA_BUFFER_SIZE)
+	if (buf_index < NTOA_BUFFER_SIZE)
 	{
 		if (is_negative)
-			buf[len++] = '-';
+			buf[buf_index++] = '-';
 		else if (specifier->flags & FLAGS_PLUS)
-			buf[len++] = '+';
+			buf[buf_index++] = '+';
 		else if (specifier->flags & FLAGS_SPACE)
-			buf[len++] = ' ';
+			buf[buf_index++] = ' ';
 	}
-	return (print_buf_rev(specifier, buf, len));
+	return (print_buf_rev(specifier, buf, buf_index));
 }
 
-//length = ft_ntoa_long_long(specifier, value, is_negative, base);
-size_t	ft_ntoa_long_long(t_specifier *specifier, unsigned long long value,
+size_t	ft_ntoa(t_specifier *specifier, unsigned long long value,
 					  int is_negative, unsigned int base)
 {
 	char	buf[NTOA_BUFFER_SIZE];
-	size_t	len = 0U;
-	char 	digit;
+	size_t	buf_index;
+	char	digits[] = "0123456789abcdef0123456789ABCDEF";
+	int		uppercase;
 
+	buf_index = 0U;
+	uppercase = 0;
 	if (!value)
-	{
 		specifier->flags &= ~FLAGS_HASH;
-	}
 	if (!(specifier->flags & FLAGS_PRECISION) || value)
 	{
-		do
+		if (specifier->flags & FLAGS_UPPERCASE)
+			uppercase = 16;
+		buf[buf_index++] = digits[(char)(value % base) + uppercase];
+		value /= base;
+		while (value && (buf_index < NTOA_BUFFER_SIZE))
 		{
-			digit = (char)(value % base);
-			buf[len++] = digit < 10 ? '0' + digit : (specifier->flags & FLAGS_UPPERCASE ? 'A' : 'a') + digit - 10; // Change for string base
+			buf[buf_index++] = digits[(char)(value % base) + uppercase];
 			value /= base;
-		} while (value && (len < NTOA_BUFFER_SIZE));
+		}
 	}
-	return (ft_ntoa_format(specifier, buf, len, is_negative, base));
+	return (ntoa_format(specifier, buf, buf_index, is_negative, base));
 }
