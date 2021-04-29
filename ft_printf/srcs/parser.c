@@ -23,8 +23,11 @@ static void	parse_flags(const char **format, t_specifier *specifier)
 	}
 }
 
-static void	parse_width(const char **format, va_list *ap, t_specifier *specifier)
+static void	parse_width(const char **format,
+					va_list *ap, t_specifier *specifier)
 {
+	int	width;
+
 	specifier->width = 0U;
 	if (ft_isdigit(**format))
 	{
@@ -32,22 +35,25 @@ static void	parse_width(const char **format, va_list *ap, t_specifier *specifier
 	}
 	else if (**format == '*')
 	{
-		const int	w = va_arg(*ap, int);
-		if (w < 0)
+		width = va_arg(*ap, int);
+		if (width < 0)
 		{
 			specifier->flags |= FLAGS_LEFT;
-			specifier->width = (unsigned int)(-w);
+			specifier->width = (unsigned int)(-width);
 		}
 		else
 		{
-			specifier->width = (unsigned int)w;
+			specifier->width = (unsigned int)width;
 		}
 		(*format)++;
 	}
 }
 
-static void	parse_precision(const char **format, va_list *ap, t_specifier *specifier)
+static void	parse_precision(const char **format,
+					va_list *ap, t_specifier *specifier)
 {
+	int	precision;
+
 	specifier->precision = 0U;
 	if (**format == '.')
 	{
@@ -59,8 +65,11 @@ static void	parse_precision(const char **format, va_list *ap, t_specifier *speci
 		}
 		else if (**format == '*')
 		{
-			const int	prec = (int) va_arg(*ap, int);
-			specifier->precision = prec > 0 ? (unsigned int)prec : 0U;
+			precision = (int)va_arg(*ap, int);
+			if (precision > 0)
+				specifier->precision = (unsigned int)precision;
+			else
+				specifier->precision = 0U;
 			(*format)++;
 		}
 	}
@@ -90,8 +99,9 @@ static void	parse_length(const char **format, t_specifier *specifier)
 	}
 }
 
-// format specifier %[flags][width][.precision][length]type
-void	parse_format_specifier(const char **format, va_list *ap, t_specifier *specifier)
+// Format specifier %[flags][width][.precision][length]type
+void	parse_format_specifier(const char **format,
+				va_list *ap, t_specifier *specifier)
 {
 	parse_flags(format, specifier);
 	parse_width(format, ap, specifier);
