@@ -18,8 +18,7 @@ static void	process_base(t_specifier *specifier, unsigned int *base)
 }
 
 static unsigned long long	process_conv_signed(va_list *ap,
-											  t_specifier *specifier,
-											  int *is_negative)
+											  t_specifier *specifier)
 {
 	unsigned long long	uvalue;
 	long long			value;
@@ -36,7 +35,7 @@ static unsigned long long	process_conv_signed(va_list *ap,
 		value = va_arg(*ap, int);
 	if (value < 0)
 	{
-		*is_negative = 1;
+		specifier->flags |= FLAGS_NEGATIVE;
 		uvalue = 0 - value;
 	}
 	else
@@ -65,14 +64,12 @@ static unsigned long long	process_conv_unsigned(va_list *ap,
 int	process_integer(va_list *ap, t_specifier *specifier)
 {
 	unsigned long long	value;
-	int					is_negative;
 	unsigned int		base;
 
-	is_negative = 0;
 	process_base(specifier, &base);
 	if ((specifier->type == 'i') || (specifier->type == 'd'))
-		value = process_conv_signed(ap, specifier, &is_negative);
+		value = process_conv_signed(ap, specifier);
 	else
 		value = process_conv_unsigned(ap, specifier);
-	return (ft_ntoa(specifier, value, is_negative, base));
+	return (ft_ntoa(specifier, value, base));
 }

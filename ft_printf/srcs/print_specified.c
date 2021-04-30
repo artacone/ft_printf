@@ -72,7 +72,7 @@ static int	print_ptr(va_list *ap, t_specifier *specifier)
 	specifier->width = sizeof(void *) * 2U;
 	specifier->flags |= FLAGS_ZEROPAD | FLAGS_UPPERCASE;
 	ptr = (unsigned long long)va_arg(*ap, void *);
-	return (ft_ntoa(specifier, ptr, 0, 16U));
+	return (ft_ntoa(specifier, ptr, 16U));
 }
 
 // TODO floats
