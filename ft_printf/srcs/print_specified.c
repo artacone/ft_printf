@@ -8,7 +8,7 @@ static int	print_number(va_list *ap, t_specifier *specifier)
 	type = specifier->type;
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X')
 		length = process_integer(ap, specifier);
-	else if (type == 'f' || type == 'e' || type == 'g')
+	else //if (type == 'f' || type == 'e' || type == 'g')
 		length = process_float(ap, specifier);
 	return (length);
 }

@@ -1,22 +1,16 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: rvertie <marvin@42.fr>                     +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/04/12 21:13:42 by rvertie           #+#    #+#              #
-#    Updated: 2021/04/22 14:45:21 by rvertie          ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME			= libftprintf.a
 
-SRCS			= $(wildcard *.c)
+SRCS_DIR		= ./srcs/
 
-HEADERS			= libft.h
+OBJS_DIR		= ./objs/
 
-OBJS			= ${SRCS:.c=.o}
+HEADERS_DIR		= ./includes/
+
+SRCS			= $(wildcard $(SRCS_DIR)*.c)
+
+HEADERS			= $(wildcard $(HEADERS_DIR)*.h)
+
+OBJS			= $(addprefix $(OBJS_DIR), $(notdir $(SRCS:.c=.o)))
 
 CC				= gcc
 
@@ -27,18 +21,21 @@ RM				= rm -f
 
 all: $(NAME) 
 
-%.o: %.c $(HEADERS)
+$(OBJS_DIR)%.o: $(SRCS_DIR)%.c $(HEADERS) | $(OBJS_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(NAME): $(OBJS) 
+$(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
 
 clean:
-		$(RM) $(OBJS)
+		$(RM) -r $(OBJS_DIR)
 
 fclean: clean
 		$(RM) $(NAME)
 
-re: fclean all
+$(OBJS_DIR):
+	mkdir $(OBJS_DIR)
+
+re: fclean $(OBJS_DIR) all
 
 .PHONY: all clean fclean re
