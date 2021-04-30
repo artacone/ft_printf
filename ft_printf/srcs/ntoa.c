@@ -1,44 +1,28 @@
 #include "../includes/ft_printf.h"
 
-unsigned int	ft_printf_atoi(const char **str)
+
+static void	ntoa_format_handle_hash(t_specifier *specifier, char *buf,
+								   size_t *buf_index, unsigned int base)
 {
-	unsigned int	i;
-
-	i = 0U;
-	while (ft_isdigit(**str))
+	if (specifier->flags & FLAGS_HASH)
 	{
-		i = i * 10U + (unsigned int)(*((*str)++) - '0');
-	}
-	return (i);
-}
-
-static size_t	print_buf_rev(t_specifier *specifier, char *buf,
-						size_t buf_index)
-{
-	size_t	length;
-	size_t	i;
-
-	length = 0;
-	if (!(specifier->flags & FLAGS_LEFT) && !(specifier->flags & FLAGS_ZEROPAD))
-	{
-		i = buf_index;
-		while (i++ < specifier->width)
+		if (!(specifier->flags & FLAGS_PRECISION)
+			&& *buf_index && ((*buf_index == specifier->precision)
+				|| *buf_index == specifier->width))
 		{
-			length += write(1, " ", 1);
+			(*buf_index)--;
+			if (*buf_index && (base == 16U))
+				(*buf_index)--;
 		}
+		if ((base == 16U) && !(specifier->flags & FLAGS_UPPERCASE)
+			&& (*buf_index < NTOA_BUFFER_SIZE))
+			buf[(*buf_index)++] = 'x';
+		else if ((base == 16U) && (specifier->flags & FLAGS_UPPERCASE)
+			&& (*buf_index < NTOA_BUFFER_SIZE))
+			buf[(*buf_index)++] = 'X';
+		if (*buf_index < NTOA_BUFFER_SIZE)
+			buf[(*buf_index)++] = '0';
 	}
-	while (buf_index)
-	{
-		length += write(1, &buf[--buf_index], 1);
-	}
-	if (specifier->flags & FLAGS_LEFT)
-	{
-		while (length < specifier->width)
-		{
-			length += write(1, " ", 1);
-		}
-	}
-	return (length);
 }
 
 static size_t	ntoa_format(t_specifier *specifier, char *buf, size_t buf_index,
@@ -58,25 +42,7 @@ static size_t	ntoa_format(t_specifier *specifier, char *buf, size_t buf_index,
 			   && (buf_index < NTOA_BUFFER_SIZE))
 			buf[buf_index++] = '0';
 	}
-	if (specifier->flags & FLAGS_HASH)
-	{
-		if (!(specifier->flags & FLAGS_PRECISION)
-			&& buf_index && ((buf_index == specifier->precision)
-				|| buf_index == specifier->width))
-		{
-			buf_index--;
-			if (buf_index && (base == 16U))
-				buf_index--;
-		}
-		if ((base == 16U) && !(specifier->flags & FLAGS_UPPERCASE)
-			&& (buf_index < NTOA_BUFFER_SIZE))
-			buf[buf_index++] = 'x';
-		else if ((base == 16U) && (specifier->flags & FLAGS_UPPERCASE)
-			 && (buf_index < NTOA_BUFFER_SIZE))
-			buf[buf_index++] = 'X';
-		if (buf_index < NTOA_BUFFER_SIZE)
-			buf[buf_index++] = '0';
-	}
+	ntoa_format_handle_hash(specifier, buf, &buf_index, base);
 	if (buf_index < NTOA_BUFFER_SIZE)
 	{
 		if (specifier->flags & FLAGS_NEGATIVE)

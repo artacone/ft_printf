@@ -1,10 +1,15 @@
 #include "../includes/ft_printf.h"
 
-static int	print_integer(va_list *ap, t_specifier *specifier)
+static int	print_number(va_list *ap, t_specifier *specifier)
 {
-	int	length;
+	int		length;
+	char	type;
 
-	length = process_integer(ap, specifier);
+	type = specifier->type;
+	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X')
+		length = process_integer(ap, specifier);
+	else if (type == 'f' || type == 'e' || type == 'g')
+		length = process_float(ap, specifier);
 	return (length);
 }
 
@@ -83,8 +88,9 @@ int	print_specified(va_list *ap, t_specifier *specifier)
 
 	length = 0;
 	type = specifier->type;
-	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X')
-		length += print_integer(ap, specifier);
+	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'
+		|| type == 'f' || type == 'g' || type == 'e')
+		length += print_number(ap, specifier);
 	else if (type == 'c')
 		length += print_char(ap, specifier);
 	else if (type == 's')

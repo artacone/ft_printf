@@ -4,6 +4,9 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdarg.h>
+
+# include <float.h>
+
 # include "../libft/libft.h"
 
 # define FLAGS_ZEROPAD		(1U << 0U)
@@ -20,7 +23,10 @@
 # define FLAGS_NEGATIVE		(1U << 11U)
 # define FLAGS_ADAPT_EXP	(1U << 12U)
 
-# define NTOA_BUFFER_SIZE (sizeof(long long) * 8)
+# define NTOA_BUFFER_SIZE	(64U)
+# define FTOA_BUFFER_SIZE	(64U)
+
+# define DEFAULT_PRECISION	(6U)
 
 typedef struct s_specifier
 {
@@ -40,5 +46,9 @@ unsigned int	ft_printf_atoi(const char **str);
 int				process_integer(va_list *ap, t_specifier *specifier);
 size_t			ft_ntoa(t_specifier *specifier, unsigned long long value,
 				 	unsigned int base);
+
+int				process_float(va_list *ap, t_specifier *specifier);
+
+size_t			print_buf_rev(t_specifier *specifier, char *buf, size_t buf_index);
 
 #endif

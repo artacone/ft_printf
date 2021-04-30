@@ -1,6 +1,5 @@
 #include "../includes/ft_printf.h"
 
-// format specifier %[flags][width][.precision][length]type
 static int	ft_printf_internal(const char *format, va_list *ap)
 {
 	int			length;
