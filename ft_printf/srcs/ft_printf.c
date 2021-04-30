@@ -12,7 +12,7 @@ static int	ft_printf_internal(const char *format, va_list *ap)
 		{
 			format++;
 			parse_format_specifier(&format, ap, &specifier);
-			length += print_specified(ap, &specifier);
+			print_specified(ap, &specifier, &length);
 		}
 		else
 		{

@@ -7,8 +7,6 @@
 
 # include <float.h>
 
-# include "../libft/libft.h"
-
 # define FLAGS_ZEROPAD		(1U << 0U)
 # define FLAGS_LEFT			(1U << 1U)
 # define FLAGS_PLUS			(1U << 2U)
@@ -39,7 +37,7 @@ typedef struct s_specifier
 int				ft_printf(const char *format, ...);
 void			parse_format_specifier(const char **format,
 					va_list *ap, t_specifier *specifier);
-int				print_specified(va_list *ap, t_specifier *specifier);
+void			print_specified(va_list *ap, t_specifier *specifier, int *length);
 
 unsigned int	ft_printf_atoi(const char **str);
 
@@ -50,5 +48,8 @@ size_t			ft_ntoa(t_specifier *specifier, unsigned long long value,
 int				process_float(va_list *ap, t_specifier *specifier);
 
 size_t			print_buf_rev(t_specifier *specifier, char *buf, size_t buf_index);
+size_t			ft_strnlen(const char *s, size_t maxlen);
+size_t			ft_strlen(const char *s);
+int				ft_isdigit(int c);
 
 #endif

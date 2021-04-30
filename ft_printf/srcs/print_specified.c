@@ -40,8 +40,6 @@ static int	print_char(va_list *ap, t_specifier *specifier)
 	return (length);
 }
 
-//	l = ft_strnlen(str, specifier->precision ? specifier->precision
-//	: (size_t)(-1));
 static int	print_string(va_list *ap, t_specifier *specifier)
 {
 	unsigned int	l;
@@ -80,26 +78,28 @@ static int	print_ptr(va_list *ap, t_specifier *specifier)
 	return (ft_ntoa(specifier, ptr, 16U));
 }
 
-// TODO floats
-int	print_specified(va_list *ap, t_specifier *specifier)
+void	print_specified(va_list *ap, t_specifier *specifier, int *length)
 {
-	int		length;
 	char	type;
+	int 	*n;
 
-	length = 0;
 	type = specifier->type;
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'
 		|| type == 'f' || type == 'g' || type == 'e')
-		length += print_number(ap, specifier);
+		*length += print_number(ap, specifier);
 	else if (type == 'c')
-		length += print_char(ap, specifier);
+		*length += print_char(ap, specifier);
 	else if (type == 's')
-		length += print_string(ap, specifier);
+		*length += print_string(ap, specifier);
 	else if (type == 'p')
-		length += print_ptr(ap, specifier);
+		*length += print_ptr(ap, specifier);
 	else if (type == '%')
-		length += write(1, "%", 1);
+		*length += write(1, "%", 1);
+	else if (type == 'n')
+	{
+		n = va_arg(*ap, int *);
+		*n = *length;
+	}
 	else
-		length += write(1, &type, 1);
-	return (length);
+		*length += write(1, &type, 1);
 }
