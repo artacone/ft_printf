@@ -37,7 +37,8 @@ typedef struct s_specifier
 int				ft_printf(const char *format, ...);
 void			parse_format_specifier(const char **format,
 					va_list *ap, t_specifier *specifier);
-void			print_specified(va_list *ap, t_specifier *specifier, int *length);
+void			process_format_specifier(va_list *ap,
+						t_specifier *specifier, int *length);
 
 unsigned int	ft_printf_atoi(const char **str);
 
