@@ -63,7 +63,7 @@ size_t	ft_ntoa(t_specifier *specifier, unsigned long long value,
 	buf_index = 0U;
 	uppercase = 0;
 	digits = "0123456789abcdef0123456789ABCDEF";
-	if (!value)
+	if (!value && specifier->type != 'p')
 		specifier->flags &= ~FLAGS_HASH;
 	if (!(specifier->flags & FLAGS_PRECISION) || value)
 	{
