@@ -69,7 +69,8 @@ static void	parse_precision(const char **format,
 			if (precision > 0)
 				specifier->precision = (unsigned int)precision;
 			else
-				specifier->precision = 0U;
+//				specifier->precision = 0U;
+				specifier->flags &= ~FLAGS_PRECISION;
 			(*format)++;
 		}
 	}
