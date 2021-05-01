@@ -28,20 +28,17 @@ static void	ntoa_format_handle_hash(t_specifier *specifier, char *buf,
 static size_t	ntoa_format(t_specifier *specifier, char *buf, size_t buf_index,
 						 unsigned int base)
 {
-	if (!(specifier->flags & FLAGS_LEFT))
-	{
-		if (specifier->width && (specifier->flags & FLAGS_ZEROPAD)
-			&& ((specifier->flags & FLAGS_NEGATIVE)
-				|| (specifier->flags & (FLAGS_PLUS | FLAGS_SPACE))))
-			specifier->width--;
-		while ((buf_index < specifier->precision)
-			&& (buf_index < NTOA_BUFFER_SIZE))
-			buf[buf_index++] = '0';
-		while ((specifier->flags & FLAGS_ZEROPAD)
-			&& (buf_index < specifier->width)
-			   && (buf_index < NTOA_BUFFER_SIZE))
-			buf[buf_index++] = '0';
-	}
+	if (specifier->width && (specifier->flags & FLAGS_ZEROPAD)
+		&& ((specifier->flags & FLAGS_NEGATIVE)
+			|| (specifier->flags & (FLAGS_PLUS | FLAGS_SPACE))))
+		specifier->width--;
+	while ((buf_index < specifier->precision)
+		&& (buf_index < NTOA_BUFFER_SIZE))
+		buf[buf_index++] = '0';
+	while ((specifier->flags & FLAGS_ZEROPAD)
+		&& (buf_index < specifier->width)
+		   && (buf_index < NTOA_BUFFER_SIZE))
+		buf[buf_index++] = '0';
 	ntoa_format_handle_hash(specifier, buf, &buf_index, base);
 	if (buf_index < NTOA_BUFFER_SIZE)
 	{
