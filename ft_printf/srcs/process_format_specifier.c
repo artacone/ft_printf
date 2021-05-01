@@ -88,6 +88,8 @@ void	process_format_specifier(va_list *ap,
 		n = va_arg(*ap, int *);
 		*n = *length;
 	}
+	else if (type == '\0')
+		return ;
 	else
 		*length += write(1, &type, 1);
 }

@@ -112,5 +112,6 @@ void	parse_format_specifier(const char **format,
 	parse_precision(format, ap, specifier);
 	parse_length(format, specifier);
 	specifier->type = **format;
-	(*format)++;
+	if (**format != '\0')
+		(*format)++;
 }

@@ -39,8 +39,14 @@ int	main()
 //	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, j, a, j, a, j, a, j, a, j));
 //	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, l, a, l, a, l, a, l, a, l));
 
-	printf("printf|% *.5i|\n", 4, 42);
-	ft_printf("fprint|% *.5i|\n", 4, 42);
+//	printf("%#");
+	ft_printf("%#");
+//	printf("\n");
+//	ft_printf("fprint|%#");
+//	printf("\n");
+//
+//	printf("printf|% *.5i|\n", 4, 42);
+//	ft_printf("fprint|% *.5i|\n", 4, 42);
 
 //	printf("printf|%0-00000-----*i|\n", 12, 8);
 //	ft_printf("fprint|%0-00000-----*i|\n", 12, 8);
