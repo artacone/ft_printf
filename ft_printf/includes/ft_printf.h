@@ -7,24 +7,24 @@
 
 # include <float.h>
 
-# define FLAGS_ZEROPAD		(1U << 0U)
-# define FLAGS_LEFT			(1U << 1U)
-# define FLAGS_PLUS			(1U << 2U)
-# define FLAGS_SPACE		(1U << 3U)
-# define FLAGS_HASH			(1U << 4U)
-# define FLAGS_UPPERCASE	(1U << 5U)
-# define FLAGS_CHAR			(1U << 6U)
-# define FLAGS_SHORT		(1U << 7U)
-# define FLAGS_LONG			(1U << 8U)
-# define FLAGS_LONG_LONG	(1U << 9U)
-# define FLAGS_PRECISION	(1U << 10U)
-# define FLAGS_NEGATIVE		(1U << 11U)
-# define FLAGS_ADAPT_EXP	(1U << 12U)
+# define FLAGS_ZEROPAD		1U
+# define FLAGS_LEFT			2U
+# define FLAGS_PLUS			4U
+# define FLAGS_SPACE		8U
+# define FLAGS_HASH			16U
+# define FLAGS_UPPERCASE	32U
+# define FLAGS_CHAR			64U
+# define FLAGS_SHORT		128U
+# define FLAGS_LONG			256U
+# define FLAGS_LONG_LONG	512U
+# define FLAGS_PRECISION	1024U
+# define FLAGS_NEGATIVE		2056U
+# define FLAGS_ADAPT_EXP	4096U
 
-# define NTOA_BUFFER_SIZE	(64U)
-# define FTOA_BUFFER_SIZE	(64U)
+# define NTOA_BUFFER_SIZE	64U
+# define FTOA_BUFFER_SIZE	64U
 
-# define DEFAULT_PRECISION	(6U)
+# define DEFAULT_PRECISION	6U
 
 typedef struct s_specifier
 {
@@ -38,19 +38,20 @@ int				ft_printf(const char *format, ...);
 void			parse_format_specifier(const char **format,
 					va_list *ap, t_specifier *specifier);
 void			process_format_specifier(va_list *ap,
-						t_specifier *specifier, int *length);
+					t_specifier *specifier, int *length);
 
-unsigned int	ft_printf_atoi(const char **str);
-
+void			process_string(va_list *ap, t_specifier *specifier,
+					 int *length);
 int				process_integer(va_list *ap, t_specifier *specifier);
-size_t			ft_ntoa(t_specifier *specifier, unsigned long long value,
-				 	unsigned int base);
-
 int				process_float(va_list *ap, t_specifier *specifier);
 
-size_t			print_buf_rev(t_specifier *specifier, char *buf, size_t buf_index);
-size_t			ft_strnlen(const char *s, size_t maxlen);
-size_t			ft_strlen(const char *s);
+size_t			ft_ntoa(t_specifier *specifier, unsigned long long value,
+					 	unsigned int base);
+
+size_t			print_buf_rev(t_specifier *specifier, char *buf,
+					   size_t buf_index);
+
 int				ft_isdigit(int c);
+unsigned int	ft_printf_atoi(const char **str);
 
 #endif

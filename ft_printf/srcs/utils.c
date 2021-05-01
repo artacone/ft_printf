@@ -5,30 +5,6 @@ int	ft_isdigit(int c)
 	return ('0' <= c && c <= '9');
 }
 
-size_t	ft_strnlen(const char *s, size_t maxlen)
-{
-	const char	*str;
-
-	str = s;
-	while (*str && maxlen--)
-	{
-		str++;
-	}
-	return (str - s);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	const char	*str;
-
-	str = s;
-	while (*str)
-	{
-		str++;
-	}
-	return (str - s);
-}
-
 unsigned int	ft_printf_atoi(const char **str)
 {
 	unsigned int	i;

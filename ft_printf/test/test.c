@@ -1,5 +1,6 @@
 #include "../includes/ft_printf.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int	main()
 {
@@ -34,8 +35,24 @@ int	main()
 //	printf("printf|%8.5d|\n", 34);
 //	ft_printf("fprint|%8.5d|\n", 34);
 
-	printf("printf|%05%|\n");
-	ft_printf("fprint|%05%|\n");
+//	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, i, a, i, a, i, a, i, a, i));
+//	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, j, a, j, a, j, a, j, a, j));
+//	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, l, a, l, a, l, a, l, a, l));
+
+	printf("printf|%0-00000-----*i|\n", 12, 8);
+	ft_printf("fprint|%0-00000-----*i|\n", 12, 8);
+
+	printf("printf|%05i|\n", -54);
+	ft_printf("fprint|%05i|\n", -54);
+
+	printf("printf|%0*i|\n", -7, -54);
+	ft_printf("fprint|%0*i|\n", -7, -54);
+
+	printf("printf|%0*i|\n", -7, 54);
+	ft_printf("fprint|%0*i|\n", -7, 54);
+
+	printf("printf|%.*s|\n", 0, "hello");
+	ft_printf("fprint|%.*s|\n", 0, "hello");
 
 	printf("printf|%-05%|\n");
 	ft_printf("fprint|%-05%|\n");

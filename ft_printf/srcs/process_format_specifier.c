@@ -31,34 +31,6 @@ static void	process_char(va_list *ap, t_specifier *specifier, int *length)
 	}
 }
 
-// Separate file ???
-static void	process_string(va_list *ap, t_specifier *specifier, int *length)
-{
-	unsigned int	l;
-	const char		*str;
-
-	str = va_arg(*ap, char *);
-	if (str == NULL)
-		str = "(null)";
-	if (specifier->precision)
-		l = ft_strnlen(str, specifier->precision);
-	else
-		l = ft_strlen(str);
-	if ((specifier->flags & FLAGS_PRECISION) && (l > specifier->precision))
-		l = specifier->precision;
-	if (!(specifier->flags & FLAGS_LEFT))
-		while (l++ < specifier->width)
-			*length += write(1, " ", 1);
-	while ((*str != '\0') && (!(specifier->flags & FLAGS_PRECISION)
-			|| specifier->precision--))
-		*length += write(1, str++, 1);
-	if (specifier->flags & FLAGS_LEFT)
-	{
-		while (l++ < specifier->width)
-			*length += write(1, " ", 1);
-	}
-}
-
 static void	process_pointer(va_list *ap, t_specifier *specifier, int *length)
 {
 	unsigned long long	ptr;
@@ -70,7 +42,7 @@ static void	process_pointer(va_list *ap, t_specifier *specifier, int *length)
 
 static void	process_percent(t_specifier *specifier, int *length)
 {
-	unsigned int l;
+	unsigned int	l;
 
 	l = 1U;
 	if (!(specifier->flags & FLAGS_LEFT))
@@ -95,7 +67,7 @@ void	process_format_specifier(va_list *ap,
 							  t_specifier *specifier, int *length)
 {
 	char	type;
-	int 	*n;
+	int		*n;
 
 	type = specifier->type;
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'

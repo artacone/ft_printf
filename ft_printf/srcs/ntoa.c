@@ -1,6 +1,5 @@
 #include "../includes/ft_printf.h"
 
-
 static void	ntoa_format_handle_hash(t_specifier *specifier, char *buf,
 								   size_t *buf_index, unsigned int base)
 {
