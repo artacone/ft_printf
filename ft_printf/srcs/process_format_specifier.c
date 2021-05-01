@@ -1,6 +1,6 @@
 #include "../includes/ft_printf.h"
 
-static void	print_number(va_list *ap, t_specifier *specifier, int *length)
+static void	process_number(va_list *ap, t_specifier *specifier, int *length)
 {
 	char	type;
 
@@ -11,7 +11,7 @@ static void	print_number(va_list *ap, t_specifier *specifier, int *length)
 		*length += process_float(ap, specifier);
 }
 
-static void	print_char(va_list *ap, t_specifier *specifier, int *length)
+static void	process_char(va_list *ap, t_specifier *specifier, int *length)
 {
 	unsigned int	l;
 	char			c;
@@ -32,12 +32,14 @@ static void	print_char(va_list *ap, t_specifier *specifier, int *length)
 }
 
 // Separate file ???
-static void	print_string(va_list *ap, t_specifier *specifier, int *length)
+static void	process_string(va_list *ap, t_specifier *specifier, int *length)
 {
 	unsigned int	l;
 	const char		*str;
 
 	str = va_arg(*ap, char *);
+	if (str == NULL)
+		str = "(null)";
 	if (specifier->precision)
 		l = ft_strnlen(str, specifier->precision);
 	else
@@ -57,17 +59,16 @@ static void	print_string(va_list *ap, t_specifier *specifier, int *length)
 	}
 }
 
-static void	print_pointer(va_list *ap, t_specifier *specifier, int *length)
+static void	process_pointer(va_list *ap, t_specifier *specifier, int *length)
 {
 	unsigned long long	ptr;
 
-	specifier->width = sizeof(void *);
 	specifier->flags |= FLAGS_HASH | FLAGS_LONG_LONG;
 	ptr = (unsigned long long)va_arg(*ap, void *);
 	*length += (ft_ntoa(specifier, ptr, 16U));
 }
 
-static void	print_percent(t_specifier *specifier, int *length)
+static void	process_percent(t_specifier *specifier, int *length)
 {
 	unsigned int l;
 
@@ -99,15 +100,15 @@ void	process_format_specifier(va_list *ap,
 	type = specifier->type;
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'
 		|| type == 'f' || type == 'g' || type == 'e')
-		print_number(ap, specifier, length);
+		process_number(ap, specifier, length);
 	else if (type == 'c')
-		print_char(ap, specifier, length);
+		process_char(ap, specifier, length);
 	else if (type == 's')
-		print_string(ap, specifier, length);
+		process_string(ap, specifier, length);
 	else if (type == 'p')
-		print_pointer(ap, specifier, length);
+		process_pointer(ap, specifier, length);
 	else if (type == '%')
-		print_percent(specifier, length);
+		process_percent(specifier, length);
 	else if (type == 'n')
 	{
 		n = va_arg(*ap, int *);
