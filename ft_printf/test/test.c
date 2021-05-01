@@ -10,7 +10,6 @@ int	main()
 //	int 	*ptr = &n;
 //	int 	X = 0x1234FA;
 
-// format specifier %[flags][width][.precision][length]type
 //	ft_printf("%d\n", n);
 //	ft_printf("%0#10c\n", c);
 //	ft_printf("%s\n", str);
@@ -40,7 +39,6 @@ int	main()
 //	PRINT(" --- Return : %d\n", PRINT("%-00000-----*i, %---0.*d, %0-0-0-0-0.*d, %-0-0-0-0-.*d, %-----.*d", a, l, a, l, a, l, a, l, a, l));
 
 //	printf("%#");
-	ft_printf("%#");
 //	printf("\n");
 //	ft_printf("fprint|%#");
 //	printf("\n");
@@ -62,5 +60,9 @@ int	main()
 //
 //	printf("printf|%.*s|\n", 0, "hello");
 //	ft_printf("fprint|%.*s|\n", 0, "hello");
+	printf("printf|%f|\n", 0.99954999);
+	ft_printf("fprint|%f|\n", 0.199945999);
+	printf("%d\n", -0.0 < 0);
+
 	return (0);
 }
