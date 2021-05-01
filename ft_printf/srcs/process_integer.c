@@ -4,6 +4,10 @@ static void	process_base(t_specifier *specifier, unsigned int *base)
 {
 	if (specifier->type == 'x' || specifier->type == 'X')
 		*base = 16U;
+	else if (specifier->type == 'o')
+		*base = 8U;
+	else if (specifier->type == 'b')
+		*base = 2U;
 	else
 	{
 		*base = 10U;
