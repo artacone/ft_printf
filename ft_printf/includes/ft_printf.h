@@ -47,6 +47,8 @@ int				process_float(va_list *ap, t_specifier *specifier);
 
 size_t			ft_ntoa(t_specifier *specifier, unsigned long long value,
 					 	unsigned int base);
+size_t			ft_ftoa(t_specifier *specifier, double value);
+size_t			ft_etoa(t_specifier *specifier, double value);
 
 size_t			print_buf_rev(t_specifier *specifier, char *buf,
 					   size_t buf_index);
