@@ -34,6 +34,17 @@ typedef struct s_specifier
 	char			type;
 }	t_specifier;
 
+typedef struct s_double
+{
+	union
+	{
+		uint64_t	u;
+		double		f;
+	}	u_double;
+	unsigned long	integer;
+	unsigned long	fractional;
+}	t_double;
+
 int				ft_printf(const char *format, ...);
 void			parse_format_specifier(const char **format,
 					va_list *ap, t_specifier *specifier);

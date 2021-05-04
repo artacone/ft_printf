@@ -17,6 +17,88 @@ static const double	g_pow10[16] = {1,
 								   100000000000000,
 								   1000000000000000};
 
+static size_t	ftoa_setup(t_specifier *specifier, t_double *value, char *buf,
+						 size_t *buf_index)
+{
+	*buf_index = 0U;
+	if (value->u_double.f != value->u_double.f)
+		return (*buf_index = print_buf_rev(specifier, "nan", 3U));
+	if (value->u_double.f < -DBL_MAX)
+		return (*buf_index = print_buf_rev(specifier, "fni-", 4U));
+	if (value->u_double.f > DBL_MAX)
+	{
+		if (specifier->flags & FLAGS_PLUS)
+			return (*buf_index = print_buf_rev(specifier, "fni+", 4U));
+		else
+			return (*buf_index = print_buf_rev(specifier, "fni", 3U));
+	}
+	if (value->u_double.u & (1UL << 63U))
+	{
+		specifier->flags |= FLAGS_NEGATIVE;
+		value->u_double.f = 0 - value->u_double.f;
+	}
+	if (!(specifier->flags & FLAGS_PRECISION))
+		specifier->precision = DEFAULT_PRECISION;
+	while ((*buf_index < FTOA_BUFFER_SIZE) && (specifier->precision > 15U))
+	{
+		buf[(*buf_index)++] = '0';
+		specifier->precision--;
+	}
+	return (0U);
+}
+
+// TODO separate printer
+static void	round(t_specifier *specifier, t_double *value, double diff, char *buf, size_t *buf_index)
+{
+	if (diff > 0.5)
+	{
+		value->fractional++;
+		if (value->fractional >= g_pow10[specifier->precision])
+		{
+			value->fractional = 0;
+			value->integer++;
+		}
+	}
+	else if (diff == 0.5 && ((value->fractional == 0U) || (value->fractional & 1U)))
+		value->fractional++;
+	if (specifier->precision == 0U)
+	{
+		diff = value->u_double.f - (double)value->integer;
+		if (!((diff < 0.5) || (diff > 0.5)) && (value->integer & 1))
+			value->integer++;
+		if ((specifier->flags & FLAGS_HASH) && (*buf_index < FTOA_BUFFER_SIZE))
+			buf[(*buf_index)++] = '.';
+	}
+}
+
+static void	ftoa_process(t_specifier *specifier, t_double value, char *buf,
+							size_t *buf_index)
+{
+	unsigned int	count;
+
+	if (specifier->precision > 0)
+	{
+		count = specifier->precision;
+		while (*buf_index < FTOA_BUFFER_SIZE)
+		{
+			count--;
+			buf[(*buf_index)++] = (char)(48U + (value.fractional % 10U));
+			if (!(value.fractional /= 10U))
+				break ;
+		}
+		while ((*buf_index < FTOA_BUFFER_SIZE) && (count-- > 0U))
+			buf[(*buf_index)++] = '0';
+		if (*buf_index < FTOA_BUFFER_SIZE)
+			buf[(*buf_index)++] = '.';
+	}
+	while ((*buf_index) < FTOA_BUFFER_SIZE)
+	{
+		buf[(*buf_index)++] = (char)(48 + (value.integer % 10));
+		if (!(value.integer /= 10))
+			break ;
+	}
+}
+
 static size_t	ftoa_format(t_specifier *specifier, char *buf, size_t buf_index)
 {
 	if (!(specifier->flags & FLAGS_LEFT) && (specifier->flags & FLAGS_ZEROPAD))
@@ -39,107 +121,24 @@ static size_t	ftoa_format(t_specifier *specifier, char *buf, size_t buf_index)
 	return (print_buf_rev(specifier, buf, buf_index));
 }
 
-static size_t	ftoa_handle_special(t_specifier *specifier, double value)
-{
-	if (value != value)
-		return (print_buf_rev(specifier, "nan", 3U));
-	if (value < -DBL_MAX)
-		return (print_buf_rev(specifier, "fni-", 4U));
-	if (value > DBL_MAX)
-	{
-		if (specifier->flags & FLAGS_PLUS)
-			return (print_buf_rev(specifier, "fni+", 4U));
-		else
-			return (print_buf_rev(specifier, "fni", 3U));
-	}
-	return (0U);
-}
-
-static void	ftoa_handle_preparation(t_specifier *specifier, double *value,
-									   char *buf, size_t *buf_index)
-{
-	union {
-		uint64_t	U;
-		double		F;
-	}	u_conv;
-	u_conv.F = *value;
-	if (u_conv.U & (1ULL << 63U))
-	{
-		specifier->flags |= FLAGS_NEGATIVE;
-		*value = 0 - *value;
-	}
-	if (!(specifier->flags & FLAGS_PRECISION))
-		specifier->precision = DEFAULT_PRECISION;
-	while ((*buf_index < FTOA_BUFFER_SIZE) && (specifier->precision > 15U))
-	{
-		buf[(*buf_index)++] = '0';
-		specifier->precision--;
-	}
-}
-
-static void	ftoa_process(t_specifier *specifier, double value, char *buf,
-							size_t *buf_index)
-{
-	double	diff;
-	int		whole = (int)value;
-	double	tmp = (value - whole) * g_pow10[specifier->precision];
-	unsigned long frac = (unsigned long)tmp;
-	diff = tmp - frac;
-
-	if (diff > 0.5)
-	{
-		frac++;
-		if (frac >= g_pow10[specifier->precision])
-		{
-			frac = 0;
-			whole++;
-		}
-	}
-	else if (diff < 0.5)
-		;
-	else if ((frac == 0U) || (frac & 1U))
-		frac++;
-	if (specifier->precision == 0U)
-	{
-		diff = value - (double)whole;
-		if (!((diff < 0.5) || (diff > 0.5)) && (whole & 1))
-			whole++;
-		if ((specifier->flags & FLAGS_HASH) && (*buf_index < FTOA_BUFFER_SIZE))
-			buf[(*buf_index)++] = '.';
-	}
-	else
-	{
-		unsigned int count = specifier->precision;
-		while (*buf_index < FTOA_BUFFER_SIZE)
-		{
-			count--;
-			buf[(*buf_index)++] = (char)(48U + (frac % 10U));
-			if (!(frac /= 10U))
-				break ;
-		}
-		while ((*buf_index < FTOA_BUFFER_SIZE) && (count-- > 0U))
-			buf[(*buf_index)++] = '0';
-		if (*buf_index < FTOA_BUFFER_SIZE)
-			buf[(*buf_index)++] = '.';
-	}
-	while ((*buf_index) < FTOA_BUFFER_SIZE)
-	{
-		buf[(*buf_index)++] = (char)(48 + (whole % 10));
-		if (!(whole /= 10))
-			break ;
-	}
-}
-
 size_t	ft_ftoa(t_specifier *specifier, double value)
 {
-	char	buf[FTOA_BUFFER_SIZE];
-	size_t	buf_index;
+	char		buf[FTOA_BUFFER_SIZE];
+	size_t		buf_index;
+	t_double	_value;
+	double		tmp;
+	double		diff;
 
-	buf_index = ftoa_handle_special(specifier, value);
-	if (buf_index)
+	_value.u_double.f = value;
+	if (ftoa_setup(specifier, &_value, buf, &buf_index))
 		return (buf_index);
-	ftoa_handle_preparation(specifier, &value, buf, &buf_index);
-	ftoa_process(specifier, value, buf, &buf_index);
+
+	_value.integer = (unsigned long)(_value.u_double.f);
+	tmp = (_value.u_double.f - _value.integer) * g_pow10[specifier->precision];
+	_value.fractional = (unsigned long)tmp;
+	diff = tmp - _value.fractional;
+	round(specifier, &_value, diff, buf, &buf_index);
+	ftoa_process(specifier, _value, buf, &buf_index);
 	return (ftoa_format(specifier, buf, buf_index));
 }
 
