@@ -1,4 +1,5 @@
 #include "../includes/ft_printf.h"
+#include <stdio.h>
 
 static const double	g_pow10[16] = {1,
 								   10,
@@ -66,7 +67,7 @@ static void	round(t_specifier *specifier, t_double *value, char *buf,
 			value->integer++;
 		}
 	}
-	else if (diff == 0.5 && ((value->fractional == 0U) || (value->fractional & 1U)))
+	else if (diff == 0.5)
 		value->fractional++;
 	if (specifier->precision == 0U)
 	{
@@ -90,7 +91,8 @@ static void	ftoa_process(t_specifier *specifier, t_double value, char *buf,
 		{
 			count--;
 			buf[(*buf_index)++] = (char)(48U + (value.fractional % 10U));
-			if (!(value.fractional /= 10U))
+			value.fractional /= 10U;
+			if (!value.fractional)
 				break ;
 		}
 		while ((*buf_index < FTOA_BUFFER_SIZE) && (count-- > 0U))
@@ -101,7 +103,8 @@ static void	ftoa_process(t_specifier *specifier, t_double value, char *buf,
 	while ((*buf_index) < FTOA_BUFFER_SIZE)
 	{
 		buf[(*buf_index)++] = (char)(48 + (value.integer % 10));
-		if (!(value.integer /= 10))
+		value.integer /= 10;
+		if (!value.integer)
 			break ;
 	}
 }
@@ -111,7 +114,7 @@ static size_t	ftoa_format(t_specifier *specifier, char *buf, size_t buf_index)
 	if (!(specifier->flags & FLAGS_LEFT) && (specifier->flags & FLAGS_ZEROPAD))
 	{
 		if (specifier->width && ((specifier->flags & FLAGS_NEGATIVE)
-								 || (specifier->flags & (FLAGS_PLUS | FLAGS_SPACE))))
+				|| (specifier->flags & (FLAGS_PLUS | FLAGS_SPACE))))
 			specifier->width--;
 		while ((buf_index < specifier->width) && (buf_index < FTOA_BUFFER_SIZE))
 			buf[buf_index++] = '0';
@@ -142,4 +145,3 @@ size_t	ft_ftoa(t_specifier *specifier, double value)
 	ftoa_process(specifier, _value, buf, &buf_index);
 	return (ftoa_format(specifier, buf, buf_index));
 }
-
