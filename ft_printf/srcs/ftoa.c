@@ -58,7 +58,12 @@ static size_t	ftoa_handle_special(t_specifier *specifier, double value)
 static void	ftoa_handle_preparation(t_specifier *specifier, double *value,
 									   char *buf, size_t *buf_index)
 {
-	if (*value < 0)
+	union {
+		uint64_t	U;
+		double		F;
+	}	u_conv;
+	u_conv.F = *value;
+	if (u_conv.U & (1ULL << 63U))
 	{
 		specifier->flags |= FLAGS_NEGATIVE;
 		*value = 0 - *value;
