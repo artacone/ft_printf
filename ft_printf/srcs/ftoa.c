@@ -48,8 +48,15 @@ static size_t	ftoa_setup(t_specifier *specifier, t_double *value, char *buf,
 }
 
 // TODO separate printer
-static void	round(t_specifier *specifier, t_double *value, double diff, char *buf, size_t *buf_index)
+static void	round(t_specifier *specifier, t_double *value, char *buf,
+				  size_t *buf_index)
 {
+	double	tmp;
+	double	diff;
+
+	tmp = (value->u_double.f - value->integer) * g_pow10[specifier->precision];
+	value->fractional = (unsigned long)tmp;
+	diff = tmp - value->fractional;
 	if (diff > 0.5)
 	{
 		value->fractional++;
@@ -126,18 +133,12 @@ size_t	ft_ftoa(t_specifier *specifier, double value)
 	char		buf[FTOA_BUFFER_SIZE];
 	size_t		buf_index;
 	t_double	_value;
-	double		tmp;
-	double		diff;
 
 	_value.u_double.f = value;
 	if (ftoa_setup(specifier, &_value, buf, &buf_index))
 		return (buf_index);
-
 	_value.integer = (unsigned long)(_value.u_double.f);
-	tmp = (_value.u_double.f - _value.integer) * g_pow10[specifier->precision];
-	_value.fractional = (unsigned long)tmp;
-	diff = tmp - _value.fractional;
-	round(specifier, &_value, diff, buf, &buf_index);
+	round(specifier, &_value, buf, &buf_index);
 	ftoa_process(specifier, _value, buf, &buf_index);
 	return (ftoa_format(specifier, buf, buf_index));
 }
