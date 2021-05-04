@@ -1,6 +1,6 @@
 #include "../includes/ft_printf.h"
 
-static const double	g_pow10[16] = {1,
+static const double	g_pow10[17] = {1,
 								   10,
 								   100,
 								   1000,
@@ -15,7 +15,8 @@ static const double	g_pow10[16] = {1,
 								   1000000000000,
 								   10000000000000,
 								   100000000000000,
-								   1000000000000000};
+								   1000000000000000,
+								   10000000000000000};
 
 static size_t	ftoa_setup(t_specifier *specifier, t_double *value, char *buf,
 						 size_t *buf_index)
@@ -39,7 +40,7 @@ static size_t	ftoa_setup(t_specifier *specifier, t_double *value, char *buf,
 	}
 	if (!(specifier->flags & FLAGS_PRECISION))
 		specifier->precision = DEFAULT_PRECISION;
-	while ((*buf_index < FTOA_BUFFER_SIZE) && (specifier->precision > 15U))
+	while ((*buf_index < FTOA_BUFFER_SIZE) && (specifier->precision > 16U))
 	{
 		buf[(*buf_index)++] = '0';
 		specifier->precision--;

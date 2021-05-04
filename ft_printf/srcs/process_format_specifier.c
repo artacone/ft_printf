@@ -8,7 +8,7 @@ static void	process_number(va_list *ap, t_specifier *specifier, int *length)
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'
 		|| type == 'o' || type == 'b')
 		*length += process_integer(ap, specifier);
-	else if (type == 'f' || type == 'e' || type == 'g')
+	else if (type == 'f')
 		*length += process_float(ap, specifier);
 }
 
@@ -72,8 +72,7 @@ void	process_format_specifier(va_list *ap,
 
 	type = specifier->type;
 	if (type == 'd' || type == 'i' || type == 'u' || type == 'x' || type == 'X'
-		|| type == 'o' || type == 'b'
-		|| type == 'f' || type == 'g' || type == 'e')
+		|| type == 'o' || type == 'b' || type == 'f')
 		process_number(ap, specifier, length);
 	else if (type == 'c')
 		process_char(ap, specifier, length);
