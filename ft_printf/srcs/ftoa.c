@@ -1,5 +1,22 @@
 #include "../includes/ft_printf.h"
 
+static const double	g_pow10[16] = {1,
+								   10,
+								   100,
+								   1000,
+								   10000,
+								   100000,
+								   1000000,
+								   10000000,
+								   100000000,
+								   1000000000,
+								   10000000000,
+								   100000000000,
+								   1000000000000,
+								   10000000000000,
+								   100000000000000,
+								   1000000000000000};
+
 static size_t	ftoa_format(t_specifier *specifier, char *buf, size_t buf_index)
 {
 	if (!(specifier->flags & FLAGS_LEFT) && (specifier->flags & FLAGS_ZEROPAD))
@@ -55,34 +72,19 @@ static void	ftoa_handle_preparation(t_specifier *specifier, double *value,
 	}
 }
 
-static void	init_pow10(double pow10[])
-{
-	int i;
-
-	i = 0;
-	pow10[i++] = 1;
-	while (i < 16)
-	{
-		pow10[i] = pow10[i - 1] * 10;
-		i++;
-	}
-}
-
 static void	ftoa_process(t_specifier *specifier, double value, char *buf,
 							size_t *buf_index)
 {
-	double	pow10[16];
-	init_pow10(pow10);
 	double	diff;
 	int		whole = (int)value;
-	double	tmp = (value - whole) * pow10[specifier->precision];
+	double	tmp = (value - whole) * g_pow10[specifier->precision];
 	unsigned long frac = (unsigned long)tmp;
 	diff = tmp - frac;
 
 	if (diff > 0.5)
 	{
 		frac++;
-		if (frac >= pow10[specifier->precision])
+		if (frac >= g_pow10[specifier->precision])
 		{
 			frac = 0;
 			whole++;
