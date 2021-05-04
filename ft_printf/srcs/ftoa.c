@@ -104,6 +104,8 @@ static void	ftoa_process(t_specifier *specifier, double value, char *buf,
 		diff = value - (double)whole;
 		if (!((diff < 0.5) || (diff > 0.5)) && (whole & 1))
 			whole++;
+		if ((specifier->flags & FLAGS_HASH) && (*buf_index < FTOA_BUFFER_SIZE))
+			buf[(*buf_index)++] = '.';
 	}
 	else
 	{
