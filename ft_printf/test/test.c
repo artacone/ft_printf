@@ -60,9 +60,12 @@ int	main()
 //
 //	printf("printf|%.*s|\n", 0, "hello");
 //	ft_printf("fprint|%.*s|\n", 0, "hello");
-	printf("printf|%f|\n", 0.99954999);
-	ft_printf("fprint|%f|\n", 0.199945999);
-	printf("%d\n", -0.0 < 0);
+	printf("printf|%.1f|\n", 3.85);
+	ft_printf("fprint|%.1f|\n", 3.85);
+	printf("printf|%.1f|\n", -3.95);
+	ft_printf("fprint|%.1f|\n", -3.95);
+	printf("printf|%.3f|\n", -3.9995);
+	ft_printf("fprint|%.3f|\n", -3.9995);
 
 	return (0);
 }

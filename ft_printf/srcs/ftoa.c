@@ -1,5 +1,4 @@
 #include "../includes/ft_printf.h"
-#include <stdio.h>
 
 static const double	g_pow10[16] = {1,
 								   10,
@@ -48,9 +47,7 @@ static size_t	ftoa_setup(t_specifier *specifier, t_double *value, char *buf,
 	return (0U);
 }
 
-// TODO separate printer
-static void	round(t_specifier *specifier, t_double *value, char *buf,
-				  size_t *buf_index)
+static void	round(t_specifier *specifier, t_double *value)
 {
 	double	tmp;
 	double	diff;
@@ -72,10 +69,8 @@ static void	round(t_specifier *specifier, t_double *value, char *buf,
 	if (specifier->precision == 0U)
 	{
 		diff = value->u_double.f - (double)value->integer;
-		if (!((diff < 0.5) || (diff > 0.5)) && (value->integer & 1))
+		if ((diff == 0.5) && (value->integer & 1))
 			value->integer++;
-		if ((specifier->flags & FLAGS_HASH) && (*buf_index < FTOA_BUFFER_SIZE))
-			buf[(*buf_index)++] = '.';
 	}
 }
 
@@ -141,7 +136,10 @@ size_t	ft_ftoa(t_specifier *specifier, double value)
 	if (ftoa_setup(specifier, &_value, buf, &buf_index))
 		return (buf_index);
 	_value.integer = (unsigned long)(_value.u_double.f);
-	round(specifier, &_value, buf, &buf_index);
+	round(specifier, &_value);
+	if ((specifier->precision == 0U)
+		&& (specifier->flags & FLAGS_HASH) && (buf_index < FTOA_BUFFER_SIZE))
+		buf[buf_index++] = '.';
 	ftoa_process(specifier, _value, buf, &buf_index);
 	return (ftoa_format(specifier, buf, buf_index));
 }
