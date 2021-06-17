@@ -5,10 +5,11 @@
 int	main()
 {
 //	char	str[] = "Hello, world!";
-//	int		n = -4221;
+	int		n = -4221;
 //	char	c = 'A';
-//	int 	*ptr = &n;
+	int 	*ptr = &n;
 //	int 	X = 0x1234FA;
+	int 	x = 0x1B;
 
 //	ft_printf("%d\n", n);
 //	ft_printf("%0#10c\n", c);
@@ -60,12 +61,21 @@ int	main()
 //
 //	printf("printf|%.*s|\n", 0, "hello");
 //	ft_printf("fprint|%.*s|\n", 0, "hello");
-	printf("printf|%.1f|\n", 3.85);
-	ft_printf("fprint|%.1f|\n", 3.85);
-	printf("printf|%.1f|\n", -3.95);
-	ft_printf("fprint|%.1f|\n", -3.95);
-	printf("printf|%.3f|\n", -3.9995);
-	ft_printf("fprint|%.3f|\n", -3.9995);
+//	printf("printf|%.1f|\n", 3.85);
+//	ft_printf("fprint|%.1f|\n", 3.85);
+//	printf("printf|%.1f|\n", -3.95);
+//	ft_printf("fprint|%.1f|\n", -3.95);
+//	printf("printf|%.3f|\n", -3.9995);
+//	ft_printf("fprint|%.3f|\n", -3.9995);
+	printf("-->|%-12p|<--\n", ptr);
+	ft_printf("-->|%-12p|<--\n", ptr);
+
+	printf("-->|%#-2x|<--\n", x);
+	ft_printf("-->|%#-2x|<--\n", x);
+	printf("-->|%2d|<--\n", 123);
+	ft_printf("-->|%#-2x|<--\n", x);
+	printf("-->|%#04x|<--\n", x);
+	ft_printf("-->|%#04x|<--\n", x);
 
 	return (0);
 }

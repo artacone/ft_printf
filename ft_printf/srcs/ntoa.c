@@ -7,10 +7,11 @@ static void	ntoa_format_handle_hash(t_specifier *specifier, char *buf,
 	{
 		if (!(specifier->flags & FLAGS_PRECISION)
 			&& *buf_index && ((*buf_index == specifier->precision)
-				|| *buf_index == specifier->width))
+				|| *buf_index == specifier->width) && (specifier->type != 'p'))
 		{
-			(*buf_index)--;
-			if (*buf_index && (base == 16U))
+			if (buf[*buf_index - 1] == '0')
+				(*buf_index)--;
+			if (*buf_index && (base == 16U) && buf[*buf_index - 1] == '0')
 				(*buf_index)--;
 		}
 		if ((base == 16U) && !(specifier->flags & FLAGS_UPPERCASE)
